@@ -29,3 +29,12 @@ def transcribe_audio(file_path: str, save_path: str = None) -> str:
             f.write(transcript_text)
 
     return transcript_text
+
+### Wrapping Whisper as a tool for the LLM
+from langchain.tools import Tool
+
+whisper_tool = Tool(
+    name="Whisper Speech Tool",
+    func=transcribe_audio,
+    description="Transcribes a .wav or .mp3 audio file into text using OpenAI Whisper."
+)

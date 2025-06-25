@@ -15,8 +15,10 @@ load_dotenv()
 # Load FAISS vector store
 db = FAISS.load_local(
     folder_path="data/vectorstores/eleo_faiss",
-    embeddings=OpenAIEmbeddings(model="text-embedding-3-small")
+    embeddings=OpenAIEmbeddings(model="text-embedding-3-small"),
+    allow_dangerous_deserialization=True  # ✅ Add this
 )
+
 retriever = db.as_retriever()
 
 # Build QA chain

@@ -17,8 +17,10 @@ load_dotenv()
 # Load FAISS vector store
 db = FAISS.load_local(
     folder_path="data/vectorstores/eleo_faiss",
-    embeddings=OpenAIEmbeddings(model="text-embedding-3-small")
+    embeddings=OpenAIEmbeddings(model="text-embedding-3-small"),
+    allow_dangerous_deserialization=True
 )
+
 retriever = db.as_retriever()
 
 # Build QA chain
@@ -39,12 +41,9 @@ qa_tool = Tool(
 )
 
 # Whisper transcription tool
-def transcribe_audio(audio_file):
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-        temp_file.write(audio_file.read())
-        temp_file.flush()
-        with open(temp_file.name, "rb") as f:
-            transcript = openai.Audio.transcribe("whisper-1", f)
+def transcribe_audio(audio_filepath):
+    with open(audio_filepath, "rb") as f:
+        transcript = openai.Audio.transcribe("whisper-1", f)
     return transcript["text"]
 
 # Add memory
@@ -70,7 +69,7 @@ interface = gr.Interface(
     fn=handle_input,
     inputs=[
         gr.Textbox(lines=2, placeholder="Ask a question..."),
-        gr.Audio(source="upload", type="file", label="Upload audio file")
+        gr.Audio(type="filepath", label="Upload audio file")
     ],
     outputs="text",
     title="Learn German with Eleo",
