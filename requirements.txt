@@ -1,0 +1,26 @@
+# Core
+python-dotenv
+openai
+langchain==0.1.16
+tiktoken
+pydantic
+
+# Vector DB (FAISS)
+faiss-cpu
+
+# Transcription
+yt-dlp
+ffmpeg-python
+
+# Gradio UI
+gradio==4.24.0
+
+# Notebook and dev tools
+ipykernel
+jupyter
+
+# Audio processing (optional, for future voice input)
+pydub
+
+# Optional LangSmith (for logging/eval)
+langsmith
