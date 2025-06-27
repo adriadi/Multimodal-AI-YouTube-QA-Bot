@@ -3,7 +3,7 @@ sys.path.append('./')
 import os
 
 from langchain.agents import initialize_agent, AgentType
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools import Tool
 from utils.whisper import whisper_tool
@@ -11,6 +11,7 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from langchain.schema import SystemMessage
 
 # Check if vectorstore exists
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +26,7 @@ retriever = db.as_retriever()
 
 # prompt template 
 custom_prompt = PromptTemplate.from_template("""
-You are an assistant that answers questions only using the following transcript chunk.
+You are Eleo - an assistant that answers questions only using the following transcript chunk.
 If the answer is not contained within it, reply with "I don't know."
 
 Transcript:
@@ -52,9 +53,16 @@ qa_tool = Tool(
     description="Answers questions about the Eleo German learning video"
 )
 
+# Define the agent's personality and identity
+identity = SystemMessage(
+    content="You are **Eleo**, a helpful and friendly AI tutor helping users learn German through YouTube videos. "
+        "Answer clearly, informatively, and keep responses beginner-friendly. "
+        "If needed, give examples or refer to parts of the video transcript. Do not mention OpenAI or that you’re an AI model."
+)
 # Initialize memory + agent
 llm = ChatOpenAI(model="gpt-3.5-turbo")
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+memory.chat_memory.messages.append(identity)
 
 agent_with_memory = initialize_agent(
     tools=[qa_tool, whisper_tool],

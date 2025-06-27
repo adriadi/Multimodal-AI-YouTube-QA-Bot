@@ -6,36 +6,35 @@ from langsmith import traceable
 def chat_and_update_history(message, history):
     response = agent_with_memory.run(message)
     updated = f"{history}\n🧑 {message}\n🤖 {response}" if history else f"🧑 {message}\n🤖 {response}"
-    return updated, ""  # Updated chat + clear input
+    return updated, "" 
 
 @traceable(name="Eleo_Gradio_Text")
 def chat_with_agent(text):
     return agent_with_memory.run(text)
 
 @traceable(name="Eleo_Gradio_Audio")
-def handle_audio(audio_file):
+def handle_audio_and_update(audio_file, history):
     transcript = transcribe_audio(audio_file)
-    response = agent_with_memory.run(transcript)
-    return f"Transcription:\n{transcript}\n\nAnswer:\n{response}"
+    return chat_and_update_history(transcript, history)
 
-# ✅ UI
+
+# UI
 with gr.Blocks() as interface:
     gr.Markdown("# Hallochen! I'm Eleo – German QA Bot")
-    gr.Markdown("Ask for everything you want to know to learn German efficiently!")
+    gr.Markdown("Ask anything to learn German efficiently!")
 
-    with gr.Tab("💬 Text Chat"):
-        chat_history = gr.Textbox(label="Conversation", interactive=False, lines=20, show_copy_button=True)
-        txt_input = gr.Textbox(placeholder="Ask something…", lines=1)
-        txt_btn = gr.Button("Ask")
+    chat_history = gr.Textbox(label="Conversation", interactive=False, lines=20, show_copy_button=True)
+    txt_input = gr.Textbox(placeholder="Ask something…", lines=1)
+    ask_btn = gr.Button("Ask")
+    mic_input = gr.Audio(sources="microphone", type="filepath", label="", show_label=False)
+    mic_btn = gr.Button("🎤")
 
-        txt_input.submit(chat_and_update_history, inputs=[txt_input, chat_history], outputs=[chat_history, txt_input])
-        txt_btn.click(chat_and_update_history, inputs=[txt_input, chat_history], outputs=[chat_history, txt_input])
+    # Text input events
+    txt_input.submit(chat_and_update_history, inputs=[txt_input, chat_history], outputs=[chat_history, txt_input])
+    ask_btn.click(chat_and_update_history, inputs=[txt_input, chat_history], outputs=[chat_history, txt_input])
 
-    with gr.Tab("🎙 Upload Audio"):
-        audio_input = gr.Audio(sources=["upload"], type="filepath", label="Upload .mp3 or .wav")
-        audio_output = gr.Textbox(label="Agent Response with Transcript")
-        audio_btn = gr.Button("Transcribe & Ask")
-        audio_btn.click(handle_audio, inputs=audio_input, outputs=audio_output)
+    # Voice input event
+    mic_btn.click(handle_audio_and_update, inputs=[mic_input, chat_history], outputs=[chat_history, txt_input])
 
 if __name__ == "__main__":
     interface.launch()
