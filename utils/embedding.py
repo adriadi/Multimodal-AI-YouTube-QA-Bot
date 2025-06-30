@@ -24,4 +24,4 @@ def save_vectorstore_faiss(db, path: str):
 # Loads FAISS db later
 def load_vectorstore_faiss(path: str):
     embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
-    return FAISS.load_local(path, embedding_model)
+    return FAISS.load_local(path, embedding_model, allow_dangerous_deserialization=True)
