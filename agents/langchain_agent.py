@@ -6,7 +6,7 @@ from langchain.agents import initialize_agent, AgentType
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools import Tool
-from utils.whisper import whisper_tool
+from utils.whisper_utils import whisper_tool
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
@@ -69,5 +69,6 @@ agent_with_memory = initialize_agent(
     llm=llm,
     agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
     memory=memory,
-    verbose=True
+    verbose=True,
+    handle_parsing_errors=True
 )

@@ -1,5 +1,3 @@
-# utils/metadata_extractor.py
-
 import yt_dlp
 import json
 import os

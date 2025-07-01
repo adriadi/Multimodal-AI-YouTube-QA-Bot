@@ -1,5 +1,5 @@
 import gradio as gr
-from utils.whisper import transcribe_audio
+from utils.whisper_utils import transcribe_audio
 from agents.langchain_agent import agent_with_memory
 from langsmith import traceable
 

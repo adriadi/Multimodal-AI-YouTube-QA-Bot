@@ -1,4 +1,3 @@
-# added json import
 import os
 import json
 from openai import OpenAI
