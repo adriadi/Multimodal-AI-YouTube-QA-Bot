@@ -1,10 +1,14 @@
-# download yt video using yt-dlp
+# utils/yt_downloader.py
 import subprocess
 
-video_url = "https://www.youtube.com/watch?v=SN-vBnWj6e8"
-output_path = "../data/eleo_audio.mp3"
+def download_audio(video_url: str, output_path: str):
+    """
+    Download audio from a YouTube video using yt-dlp and save as .mp3.
 
-def download_audio(video_url, output_path):
+    Args:
+        video_url (str): The full YouTube video URL
+        output_path (str): File path where .mp3 will be saved
+    """
     try:
         result = subprocess.run(
             ["yt-dlp", "-x", "--audio-format", "mp3", "-o", output_path, video_url],
@@ -14,6 +18,4 @@ def download_audio(video_url, output_path):
         )
         print(result.stdout)
     except subprocess.CalledProcessError as e:
-        print("Error during download:", e.stderr)
-
-download_audio(video_url, output_path)
+        print("❌ Error during download:", e.stderr)

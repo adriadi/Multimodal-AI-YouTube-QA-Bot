@@ -12,10 +12,16 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain.schema import SystemMessage
+import json
 
 # Check if vectorstore exists
 project_root = os.path.dirname(os.path.abspath(__file__))
-vectorstore_path = os.path.abspath(os.path.join(project_root, "../data/vectorstores/eleo_faiss"))
+# take ID dynamically from the videos_to_process.json file
+entry = json.load(open("videos_to_process.json"))[0]
+video_id = entry["url"].split("v=")[-1]
+   
+vectorstore_path = os.path.abspath(os.path.join(project_root, f"../data/vectorstores/{video_id}_faiss"))
+
 
 index_path = os.path.join(vectorstore_path, "index.faiss")
 if not os.path.exists(index_path):
@@ -70,5 +76,8 @@ agent_with_memory = initialize_agent(
     agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
     memory=memory,
     verbose=True,
-    handle_parsing_errors=True
+    handle_parsing_errors=True,
 )
+
+def run_conversation(query: str) -> str:
+    return agent_with_memory.run(query)
