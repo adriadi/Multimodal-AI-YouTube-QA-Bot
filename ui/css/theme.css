@@ -1,0 +1,88 @@
+/* App background */
+.gradio-container {
+  background: radial-gradient(circle at center, #f8f9fb, #e8ecf1);
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  padding: 48px;
+  box-sizing: border-box;
+}
+
+/* Title */
+#component-0 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+/* Chatbot box */
+#chatbot {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow:
+    8px 8px 16px rgba(209, 217, 230, 0.6),
+    -8px -8px 16px #ffffff;
+  color: #1e293b;
+  font-weight: 500;
+  min-height: 300px;
+}
+
+/* Row styling */
+.gr-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* Text input */
+textarea, input[type="text"] {
+  background: #ffffff;
+  border-radius: 24px;
+  border: none;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  color: #334155;
+  box-shadow:
+    8px 8px 16px rgba(209, 217, 230, 0.4),
+    -8px -8px 16px #ffffff;
+  min-width: 250px;
+  height: 48px;
+}
+
+/* Audio input */
+#mic-input {
+  background: #ffffff !important;
+  border-radius: 24px !important;
+  padding: 12px;
+  box-shadow:
+    8px 8px 16px rgba(209, 217, 230, 0.4),
+    -8px -8px 16px #ffffff;
+}
+
+/* Send button */
+#send-btn {
+  background: #fef6e4 !important;
+  color: #1e293b !important;
+  border-radius: 24px !important;
+  padding: 12px 20px !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow:
+    4px 4px 8px rgba(209, 217, 230, 0.6),
+    -4px -4px 8px #ffffff;
+  transition: background 0.3s ease;
+}
+
+#send-btn:hover {
+  background: #fdf2cf !important;
+}
+
+
+/* Optional: make all corners consistent */
+.gradio-container * {
+  border-radius: 24px;
+}

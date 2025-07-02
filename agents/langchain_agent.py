@@ -7,12 +7,12 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools import Tool
 from utils.whisper_utils import whisper_tool
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain.schema import SystemMessage
-import json
+import json 
 
 # Check if vectorstore exists
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -47,16 +47,16 @@ qa_chain = RetrievalQA.from_chain_type(
     chain_type="stuff",
     retriever=retriever,
     chain_type_kwargs={"prompt": custom_prompt},
-    return_source_documents=False
+    return_source_documents=True
 )
 
 def answer_question_only_result(query: str) -> str:
-    return qa_chain.invoke({"query": query})["result"]
+    return qa_chain.run(query)
 
 qa_tool = Tool(
     name="VideoQA",
     func=answer_question_only_result,
-    description="Answers questions about the Eleo German learning video"
+    description="Answer questions about German from the transcribed videos"
 )
 
 # Define the agent's personality and identity
