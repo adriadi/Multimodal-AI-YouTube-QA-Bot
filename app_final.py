@@ -17,6 +17,16 @@ def handle_audio_and_update(audio_file, history):
     transcript = transcribe_audio(audio_file)
     return chat_and_update_history(transcript, history)
 
+def handle_audio_and_update(audio_file, history):
+    if audio_file is None:
+        return "❗ Please upload an audio file to transcribe.", history
+    try:
+        transcript = transcribe_audio(audio_file)
+        response = agent_with_memory.run(transcript)
+        updated_history = f"{history}\n🧑 {transcript}\n🤖 {response}"
+        return response, updated_history
+    except Exception as e:
+        return f"❌ An error occurred: {str(e)}", history
 
 # UI
 with gr.Blocks() as interface:
