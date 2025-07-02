@@ -3,10 +3,31 @@ from utils.whisper_utils import transcribe_audio
 from agents.langchain_agent import agent_with_memory
 from langsmith import traceable
 
+# stop to getting out of the scope
+def check_query_scope(query: str) -> str | None:
+    forbidden_languages = ["Portuguese", "Spanish", "French", "Italian", "Russian", "Chinese", "Japanese", "Korean", "Arabic", "Hindi", "English", "Polish", "Ukrainian", "Czech", "Slovak", "Hungarian", "Romanian", "Bulgarian", "Greek", "Turkish", "Dutch", "Swedish", "Norwegian", "Danish", "Finnish"]
+    off_topic_keywords = ["ai", "bake", "lifestyle", "space", "aliens", "stock market", "news", "cooking", "politics", "history", "science", "technology", "health", "fitness", "travel", "gaming", "music", "movies", "books", "art", "photography", "fashion", "beauty", "sports"]
+
+    if any(lang.lower() in query.lower() for lang in forbidden_languages):
+        return ("I can teach you only German, but some of my tips are generally useful "
+                "for learning any language. Stay consistent, speak daily, and talk to others when possible!")
+    
+    if not any(topic in query.lower() for topic in allowed_topics):
+        return ("I'm here to help you learn German from using video lessons. "
+                "Try asking about grammar, vocabulary, or conversations you've seen in my videos!")
+    
+    return None
+
+
 def chat_and_update_history(message, history):
-    response = agent_with_memory.run(message)
+    scope_warning = check_query_scope(message)
+    if scope_warning:
+        response = scope_warning
+    else:
+        response = agent_with_memory.run(message)
     updated = f"{history}\n🧑 {message}\n🤖 {response}" if history else f"🧑 {message}\n🤖 {response}"
-    return updated, "" 
+    return updated, ""
+
 
 @traceable(name="Eleo_Gradio_Text")
 def chat_with_agent(text):
@@ -27,6 +48,7 @@ def handle_audio_and_update(audio_file, history):
         return response, updated_history
     except Exception as e:
         return f"❌ An error occurred: {str(e)}", history
+
 
 # UI
 with gr.Blocks() as interface:
