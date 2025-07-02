@@ -8,139 +8,172 @@ def create_interface():
     with gr.Blocks(css="css/theme.css") as interface:
         gr.HTML("""
         <style>
-/* App background */
 .gradio-container {
-  background: radial-gradient(circle at center, #f8f9fb, #e8ecf1);
-  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-  padding: 48px;
-  box-sizing: border-box;
+  background: radial-gradient(circle at center, #FFF2F8, #E4E7F7);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+/* Page panel layout */
+.gr-column {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 40px 32px;
+  box-shadow:
+    8px 8px 16px rgba(209, 217, 230, 0.3),
+    -8px -8px 16px #ffffff;
+  width: 480px;
+  gap: 20px;
 }
 
 /* Title */
 #component-0 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #1e293b;
   text-align: center;
-  margin-bottom: 1.5em;
+  color: #1e293b;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 24px;
 }
 
-/* All content boxes */
-#chatbot, #user-input, #mic-input {
+/* Chatbot box */
+#chatbot {
   background: #ffffff;
   border-radius: 24px;
   padding: 24px;
   box-shadow:
-    8px 8px 16px rgba(209, 217, 230, 0.6),
-    -8px -8px 16px #ffffff;
+    6px 6px 12px rgba(209, 217, 230, 0.3),
+    -6px -6px 12px #ffffff;
+  min-height: 180px;
   color: #1e293b;
-  font-weight: 500;
 }
 
-/* Minimum height only for chatbot */
-#chatbot {
-  min-height: 300px;
-}
-
-/* Row styling */
-.gr-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-
-/* Textbox input */
-textarea, input[type="text"] {
+/* Inputs and audio */
+textarea, input[type="text"], .gr-audio {
   background: #ffffff;
   border-radius: 24px;
   border: none;
   padding: 12px 18px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #334155;
   box-shadow:
-    inset 4px 4px 8px rgba(209, 217, 230, 0.3),
-    inset -4px -4px 8px #ffffff;
-  width: 100%;
+    inset 2px 2px 6px rgba(209, 217, 230, 0.3),
+    inset -2px -2px 6px #ffffff;
   height: 48px;
-  min-width: 260px;
+  width: 100%;
 }
 
-/* Audio wrapper box */
-.gr-box:has(#mic-input),
-.gr-box:has(textarea),
-.gr-box:has(input[type="text"]) {
-  background: #ffffff !important;
+/* Audio box parent */
+#mic-input, .form {
   border-radius: 24px !important;
   box-shadow:
-    8px 8px 16px rgba(209, 217, 230, 0.4),
-    -8px -8px 16px #ffffff;
-  padding: 16px !important;
+    4px 4px 8px rgba(209, 217, 230, 0.3),
+    -4px -4px 8px #ffffff;
+}
+.gr-box:has(#mic-input) {
+  background: #ffffff;
+  border-radius: 24px !important;
+  box-shadow:
+    4px 4px 8px rgba(209, 217, 230, 0.2),
+    -4px -4px 8px #ffffff;
+  padding: 12px;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
+  align-items: center;
 }
-
-/* Inner audio style */
-#mic-input {
-  background: transparent !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  width: 100%;
+#mic-input button {
+  font-size: 1rem !important;
+  font-weight: 500;
 }
-
+.mic-select {
+  display: none !important;
+}
+.input-container > textarea {
+  margin-bottom: 16px !important;
+}
+.audio-container {padding-bottom: 10px !important;}
+.microphone {display: none !important;}
+  
 /* Send button */
 #send-btn {
-  background: #fef6e4 !important;
+  background: #F5DCBA !important;
   color: #1e293b !important;
+  border-color: #F2D8C2 !important;
   border-radius: 24px !important;
   padding: 12px 20px !important;
   font-weight: 600;
   font-size: 0.95rem;
   box-shadow:
-    4px 4px 8px rgba(209, 217, 230, 0.6),
+    4px 4px 8px rgba(209, 217, 230, 0.4),
     -4px -4px 8px #ffffff;
   transition: background 0.3s ease;
+  height: 46px !important;
 }
-
+label, label span {
+  font-size: 0.8rem !important;
+  font-weight: 500;
+  color: #334155 !important;  
+  border: none !important;
+  shadow: none !important;
+}
 #send-btn:hover {
   background: #fdf2cf !important;
 }
+.icon-button-wrapper {
+  display: none !important;
+}
+
         </style>
         """)
 
         with gr.Row():
             gr.Markdown("## Eleo's Corner - German Learning Assistant")
 
-        chatbot = gr.Chatbot(label="Eleo Chatbot ready to answer!", show_copy_button=False, scale=12, elem_id="chatbot", type="messages")
+        chatbot = gr.Chatbot(
+            label="Eleo Chatbot ready to answer!",
+            show_copy_button=False,
+            scale=12,
+            elem_id="chatbot",
+            type="messages"
+        )
 
         with gr.Row():
-            user_input = gr.Textbox(
-                placeholder="Ask me anything…",
-                lines=1,
-                scale=6,
-                show_label=True,
-                label="Your question",
-                container=True,
-                elem_id="user-input"
-            )
-            mic_input = gr.Audio(
-                sources="microphone",
-                type="filepath",
-                label="Record",
-                show_label=True,
-                scale=2,
-                container=True,
-                elem_id="mic-input"
-            )
-            send_btn = gr.Button("Send question", variant="primary", scale=1, elem_id="send-btn")
+          with gr.Column(scale=10):
+              user_input = gr.Textbox(
+                  placeholder="Ask me anything…",
+                  lines=1,
+                  scale=6,
+                  label="Ask to learn German!",
+                  show_label=True,
+                  container=True,
+                  elem_id="user-input"
+              )
+              send_btn = gr.Button(
+                  "Send question",
+                  variant="primary",
+                  scale=1,
+                  elem_id="send-btn"
+              )
+          with gr.Column(scale=1):
+              mic_input = gr.Audio(
+                  sources="microphone",
+                  type="filepath",
+                  label="Record your question",
+                  show_label=True,
+                  scale=2,
+                  container=True,
+                  elem_id="mic-input"
+              )
 
         # Event bindings
         user_input.submit(chat_and_update_history, inputs=[user_input, chatbot], outputs=[chatbot, user_input])
         send_btn.click(chat_and_update_history, inputs=[user_input, chatbot], outputs=[chatbot, user_input])
-        mic_input.change(handle_audio_and_update, inputs=[mic_input, chatbot], outputs=[chatbot, user_input])
-    
+        
+        # auto-send and clear mic_input after
+        mic_input.change(
+            handle_audio_and_update,
+            inputs=[mic_input, chatbot],
+            outputs=[chatbot, mic_input]  # clears the mic input
+        )
+
     return interface

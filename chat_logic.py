@@ -1,6 +1,6 @@
 from agents.langchain_agent import agent_with_memory
 from utils.whisper_utils import transcribe_audio
-
+import os
 # stop to getting out of the scope
 def check_query_scope(query: str) -> str | None:
     forbidden_languages = [
@@ -47,22 +47,22 @@ def chat_and_update_history(message, history):
     history.append({"role": "assistant", "content": bot_reply})
     return history, ""
 
-
-
 def handle_audio_and_update(audio_file, history):
-    if audio_file is None:
-        return history + [{"role": "user", "content": "[audio]"}, {"role": "assistant", "content": "❗ Please upload an audio file to transcribe."}], ""
+    # catch empty/invalid paths or folders
+    if not audio_file or not isinstance(audio_file, str) or not os.path.isfile(audio_file):
+        return history, None
 
     try:
         transcript = transcribe_audio(audio_file)
         scope_warning = check_query_scope(transcript)
-        if scope_warning:
-            response = scope_warning
-        else:
-            response = agent_with_memory.run(transcript)
+
+        response = scope_warning if scope_warning else agent_with_memory.run(transcript)
 
         history.append({"role": "user", "content": transcript})
         history.append({"role": "assistant", "content": response})
-        return history, ""
+
+        return history, None  # Reset mic
     except Exception as e:
-        return history + [{"role": "user", "content": "[audio]"}, {"role": "assistant", "content": f"❌ Error: {str(e)}"}], ""
+        history.append({"role": "user", "content": "[audio]"})
+        history.append({"role": "assistant", "content": f"❌ Error: {str(e)}"})
+        return history, None

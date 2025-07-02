@@ -1,18 +1,30 @@
-/* App background */
 .gradio-container {
-  background: radial-gradient(circle at center, #f8f9fb, #e8ecf1);
-  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-  padding: 48px;
-  box-sizing: border-box;
+  background: radial-gradient(circle at center, #FFF2F8, #E4E7F7);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+/* Page panel layout */
+.gr-column {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 40px 32px;
+  box-shadow:
+    8px 8px 16px rgba(209, 217, 230, 0.3),
+    -8px -8px 16px #ffffff;
+  width: 480px;
+  gap: 20px;
 }
 
 /* Title */
 #component-0 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #1e293b;
   text-align: center;
-  margin-bottom: 1.5em;
+  color: #1e293b;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 24px;
 }
 
 /* Chatbot box */
@@ -21,68 +33,86 @@
   border-radius: 24px;
   padding: 24px;
   box-shadow:
-    8px 8px 16px rgba(209, 217, 230, 0.6),
-    -8px -8px 16px #ffffff;
+    6px 6px 12px rgba(209, 217, 230, 0.3),
+    -6px -6px 12px #ffffff;
+  min-height: 180px;
   color: #1e293b;
-  font-weight: 500;
-  min-height: 300px;
 }
 
-/* Row styling */
-.gr-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-/* Text input */
-textarea, input[type="text"] {
+/* Inputs and audio */
+textarea, input[type="text"], .gr-audio {
   background: #ffffff;
   border-radius: 24px;
   border: none;
   padding: 12px 18px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #334155;
   box-shadow:
-    8px 8px 16px rgba(209, 217, 230, 0.4),
-    -8px -8px 16px #ffffff;
-  min-width: 250px;
+    inset 2px 2px 6px rgba(209, 217, 230, 0.3),
+    inset -2px -2px 6px #ffffff;
   height: 48px;
+  width: 100%;
 }
 
-/* Audio input */
-#mic-input {
-  background: #ffffff !important;
+/* Audio box parent */
+#mic-input, .form {
   border-radius: 24px !important;
-  padding: 12px;
   box-shadow:
-    8px 8px 16px rgba(209, 217, 230, 0.4),
-    -8px -8px 16px #ffffff;
+    4px 4px 8px rgba(209, 217, 230, 0.3),
+    -4px -4px 8px #ffffff;
+}
+.gr-box:has(#mic-input) {
+  background: #ffffff;
+  border-radius: 24px !important;
+  box-shadow:
+    4px 4px 8px rgba(209, 217, 230, 0.2),
+    -4px -4px 8px #ffffff;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+}
+#mic-input {
+  height: 166px !important;
+}
+#mic-input button {
+  font-size: 1rem !important;
+  font-weight: 500;
+}
+#mic-input .mic-select {
+  font-size: 0.5rem !important;
+  }
+.mic-select {
+  margin-top: 16px !important;
+}
+.input-container > textarea {
+  margin-bottom: 16px !important;
 }
 
 /* Send button */
 #send-btn {
-  background: #fef6e4 !important;
+  background: #F5DCBA !important;
   color: #1e293b !important;
+  border-color: #F2D8C2 !important;
   border-radius: 24px !important;
   padding: 12px 20px !important;
   font-weight: 600;
   font-size: 0.95rem;
   box-shadow:
-    4px 4px 8px rgba(209, 217, 230, 0.6),
+    4px 4px 8px rgba(209, 217, 230, 0.4),
     -4px -4px 8px #ffffff;
   transition: background 0.3s ease;
+  height: 46px !important;
 }
-
+label, label span {
+  font-size: 0.8rem !important;
+  font-weight: 500;
+  color: #334155 !important;  
+  border: none !important;
+  shadow: none !important;
+}
 #send-btn:hover {
   background: #fdf2cf !important;
 }
-
-
-/* Optional: make all corners consistent */
-.gradio-container * {
-  border-radius: 24px;
+.icon-button-wrapper {
+  display: none !important;
 }
