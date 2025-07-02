@@ -9,36 +9,43 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # added `save_json` parameter
 def transcribe_audio(file_path: str, save_path: str = None, save_json: bool = False) -> str:
     """
-    Transcribes an audio file using Whisper (OpenAI API).
+    Transcribes an audio file using OpenAI Whisper API or local model on failure.
 
     Args:
         file_path (str): Path to the .mp3/.wav audio file
-        save_path (str, optional): If given, saves the result to .txt
-        save_json (bool): If True, also saves transcript as JSON
+        save_path (str, optional): If provided, saves transcript to .txt
+        save_json (bool): If True, saves transcript to JSON
 
     Returns:
-        str: The transcript text
+        str: Transcript text
     """
-    with open(file_path, "rb") as audio_file:
-        response = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_file
-        )
+    if not file_path or not os.path.exists(file_path):
+        raise ValueError("❌ No valid audio file provided.")
 
-    transcript_text = response.text
+    try:
+        with open(file_path, "rb") as audio_file:
+            response = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file
+            )
+        transcript = response.text
 
-    # write plain text
+    except RateLimitError:
+        print("⚠️ OpenAI quota exceeded. Falling back to local Whisper...")
+        model = whisper.load_model("base")
+        result = model.transcribe(file_path)
+        transcript = result["text"]
+
     if save_path:
-        with open(save_path, "w") as f:
-            f.write(transcript_text)
+        with open(save_path, "w", encoding="utf-8") as f:
+            f.write(transcript)
 
-    # write json version
     if save_json:
-        json_path = save_path.replace(".txt", ".json") if save_path else file_path.replace(".mp3", ".json")
-        with open(json_path, "w", encoding="utf-8") as jf:
-            json.dump({"transcript": transcript_text}, jf, indent=2)
+        json_path = save_path.replace(".txt", ".json") if save_path else file_path + ".json"
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump({"transcript": transcript}, f, ensure_ascii=False, indent=2)
 
-    return transcript_text
+    return transcript
 
 # Tool wrapper
 from langchain.tools import Tool
