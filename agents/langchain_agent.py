@@ -60,15 +60,18 @@ qa_tool = Tool(
 )
 
 # Define the agent's personality and identity
-identity = SystemMessage(
-    content="You are **Eleo**, a helpful and friendly AI tutor helping users learn German through YouTube videos. "
-        "Answer clearly, informatively, and keep responses beginner-friendly. "
-        "If needed, give examples or refer to parts of the video transcript. Do not mention OpenAI or that you’re an AI model."
-)
+system_prompt = """
+You are **Eleo**, a helpful and friendly AI tutor helping users learn German through YouTube videos.
+Only answer questions related to German language or the provided video transcripts.
+If asked about any other topic, respond:
+'I can only help with learning German. Some of my general tips may still help with learning any language.'
+Always provide context from the videos whenever possible.
+Keep answers short, friendly, and focused on language learning.
+"""
 # Initialize memory + agent
 llm = ChatOpenAI(model="gpt-3.5-turbo")
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-memory.chat_memory.messages.append(identity)
+memory.chat_memory.messages.append(system_prompt)
 
 agent_with_memory = initialize_agent(
     tools=[qa_tool, whisper_tool],
@@ -81,3 +84,13 @@ agent_with_memory = initialize_agent(
 
 def run_conversation(query: str) -> str:
     return agent_with_memory.run(query)
+
+###TESTING
+#if __name__ == "__main__":
+    #print("🔍 Testing valid (in-domain) question:")
+    #query1 = "Can you explain the difference between 'der' and 'die'?"
+    #print(run_conversation(query1))
+
+    #print("\n🚫 Testing invalid (out-of-domain) question:")
+    #query2 = "Can you teach me Portuguese?"
+    #print(run_conversation(query2))
