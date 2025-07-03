@@ -2,8 +2,11 @@
 python-dotenv
 openai
 langchain==0.1.16
+langchain-community
+langchain-openai
 tiktoken
 pydantic
+python-dotenv
 
 # Vector DB (FAISS)
 faiss-cpu
@@ -11,6 +14,8 @@ faiss-cpu
 # Transcription
 yt-dlp
 ffmpeg-python
+pytube
+tqdm
 
 # Gradio UI
 gradio==4.24.0

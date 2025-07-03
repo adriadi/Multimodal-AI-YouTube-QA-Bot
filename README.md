@@ -1,7 +1,10 @@
 # 🧠 Eleo – Multimodal AI ChatBot for YouTube Video QA
 
 **Eleo** is an intelligent chatbot that helps users learn German through conversation by analyzing YouTube video content. It leverages **LangChain**, **Whisper**, **FAISS**, and **Gradio** to support both voice and text queries. Built as part of the Ironhack AI final project, Eleo enables users to ask questions about language-learning videos and receive accurate, conversational responses.
+---
 
+## 🍉 DEMO
+[DEMO can be found here:](https://huggingface.co/spaces/industrialdog/Eleos_German)
 ---
 
 ## 🎯 Project Objectives
