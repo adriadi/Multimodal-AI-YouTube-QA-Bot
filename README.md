@@ -7,6 +7,7 @@
 ## 🍉 DEMO
 
 [DEMO deployed to HuggingFace can be found here](https://huggingface.co/spaces/industrialdog/Eleos_German)
+[Presentation slides](https://docs.google.com/presentation/d/1_9-4172D3SosNgFNDMg-f9EmXPsP3lrqjV-ebeMxlL4/edit?slide=id.p#slide=id.p)
 
 ---
 
@@ -27,8 +28,7 @@
 - **OpenAI Whisper** (audio transcription)
 - **OpenAI Embeddings + FAISS** (semantic vector DB)
 - **Gradio** (UI for text and audio)
-- **LangSmith** (for tracing and evaluation)
-
+- **HuggingFace** (ready for deployment)
 ---
 
 ## 🧱 System Architecture
@@ -37,24 +37,25 @@
 YouTube Videos (videos_to_process.json)
         ↓
 video_pipeline.py
-  - Downloads video audio
-  - Transcribes via Whisper
+⤷ Downloads video audio
+⤷ Transcribes via Whisper
         ↓
 chunking_embedding.ipynb
-  - Loads transcripts
-  - Splits using RecursiveCharacterTextSplitter
-  - Embeds with OpenAIEmbeddings
-  - Saves to FAISS vector store
+⤷ Loads transcripts
+⤷ Splits using RecursiveCharacterTextSplitter
+⤷ Embeds with OpenAIEmbeddings
+⤷ Saves to FAISS vector store
         ↓
 langchain_agent.py / langchain_agent.ipynb
-  - Loads retriever from FAISS
-  - Wraps retriever and Whisper into LangChain Tools
-  - Builds LangChain Agent with Memory
+⤷ Loads retriever + memory + whisper tool
+⤷ Wraps into LangChain Agent with Memory
         ↓
 app_final.py (Gradio)
-  - Handles text and audio input
-  - Calls the LangChain agent
-  - Displays conversational output
+⤷ Handles text and audio input
+⤷ Loads UI from ui/app_ui.py
+⤷ Chat + mic input using Gradio
+⤷ Calls the LangChain agent
+⤷ Displays conversational output
 ```
 
 ---
@@ -69,7 +70,9 @@ app_final.py (Gradio)
 | `chunking_embedding.ipynb` | Chunks and embeds transcripts into FAISS |
 | `langchain_agent.py` | Wraps tools + retriever into LangChain Agent |
 | `langchain_agent.ipynb` | Interactive notebook version of the agent setup |
+| `chat_logic.py` | Handles text/audio → agent interaction |
 | `app_final.py` | Gradio interface for text and voice chat |
+| `ui/app_ui.py` | Gradio Blocks UI (chat, mic, layout) |
 | `utils/whisper_utils.py` | Whisper-based transcription logic |
 | `utils/chunking.py` | Transcript loading and splitting |
 | `utils/metadata_extract.py` | (Optional) for metadata/tagging enhancements |
@@ -109,17 +112,9 @@ LANGCHAIN_PROJECT=EleoChatBot
 python app_final.py
 ```
 
-- Ask questions about the video via **text or voice**
+- Ask questions about german language via **text or voice**
 - Real-time transcription + retrieval + response
 - Uses **LangSmith traceable decorators** for QA and logging
-
----
-
-## 🧪 LangSmith Integration
-
-- Integrated via `@traceable` in `app_final.py`
-- Logs both audio and text queries for monitoring
-- Evaluation-ready via [smith.langchain.com](https://smith.langchain.com/)
 
 ---
 
@@ -139,15 +134,6 @@ Videos come from **Eleo’s Corner**, a YouTube channel focused on German langua
 - **Whisper Tool** for audio-based tool use
 - **Memory** to preserve conversation flow
 - **Parsing resilience** enabled via `handle_parsing_errors=True`
-
----
-
-## 📦 Future Enhancements
-
-- Multilingual video support
-- Smart tool routing via tags
-- Semantic feedback scoring via LangSmith
-- Deployment via Streamlit or HuggingFace Spaces
 
 ---
 
